@@ -1,0 +1,9 @@
+<launch>
+    <include file="$(find jaco_arm_navigation)/launch/jaco_planning_environment.launch" />
+    <node pkg="arm_kinematics_constraint_aware" type="arm_kinematics_constraint_aware" name="jaco_jaco_kinematic_chain_kinematics">
+        <param name="group" type="string" value="jaco_kinematic_chain" />
+        <param name="jaco_kinematic_chain/root_name" type="string" value="jaco_base_link" />
+        <param name="jaco_kinematic_chain/tip_name" type="string" value="jaco_hand_link" />
+        <param name="kinematics_solver" type="string" value="arm_kinematics_constraint_aware/KDLArmKinematicsPlugin" />
+    </node>
+</launch>

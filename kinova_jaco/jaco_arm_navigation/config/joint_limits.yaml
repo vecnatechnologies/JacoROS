@@ -1,0 +1,43 @@
+joint_limits:
+  jaco_shoulder_yaw_joint:
+    has_position_limits: true
+    has_velocity_limits: true
+    max_velocity: 3.14159265359
+    has_acceleration_limits: true
+    max_acceleration: 1
+    angle_wraparound: false
+  jaco_shoulder_pitch_joint:
+    has_position_limits: true
+    has_velocity_limits: true
+    max_velocity: 3.14159265359
+    has_acceleration_limits: true
+    max_acceleration: 1
+    angle_wraparound: false
+  jaco_elbow_pitch_joint:
+    has_position_limits: true
+    has_velocity_limits: true
+    max_velocity: 3.14159265359
+    has_acceleration_limits: true
+    max_acceleration: 1
+    angle_wraparound: false
+  jaco_elbow_roll_joint:
+    has_position_limits: true
+    has_velocity_limits: true
+    max_velocity: 3.14159265359
+    has_acceleration_limits: true
+    max_acceleration: 1
+    angle_wraparound: false
+  jaco_wrist_roll_joint:
+    has_position_limits: true
+    has_velocity_limits: true
+    max_velocity: 3.14159265359
+    has_acceleration_limits: true
+    max_acceleration: 1
+    angle_wraparound: false
+  jaco_hand_roll_joint:
+    has_position_limits: true
+    has_velocity_limits: true
+    max_velocity: 3.14159265359
+    has_acceleration_limits: true
+    max_acceleration: 1
+    angle_wraparound: false

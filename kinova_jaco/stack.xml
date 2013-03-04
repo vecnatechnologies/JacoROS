@@ -1,0 +1,10 @@
+<stack>
+  <description brief="kinova_jaco">
+	Kinova JACO-related packages.
+  </description>
+  <author>Maintained by François Ferland</author>
+  <license>BSD</license>  
+  <review status="unreviewed"/>
+  <url>http://ros.org/wiki/kinova_jaco</url>
+
+</stack>

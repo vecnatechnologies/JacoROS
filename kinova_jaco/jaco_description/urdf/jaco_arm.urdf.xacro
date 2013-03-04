@@ -1,0 +1,293 @@
+<?xml version="1.0"?>
+<robot 
+    xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor"
+    xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"
+    xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
+    xmlns:xacro="http://ros.org/wiki/xacro">
+
+    <include filename="$(find jaco_description)/urdf/common.xacro" />
+
+    <property name="base_length" value="0.2"/>
+    <property name="base_radius" value="0.05"/>
+    <property name="shoulder_radius" value="0.05"/>
+    <property name="upper_arm_length" value="0.41"/>
+    <property name="upper_arm_radius" value="0.025"/>
+    <property name="elbow_radius" value="0.05"/>
+    <property name="lower_arm_length" value="0.20"/>
+    <property name="lower_arm_radius" value="0.015"/>
+    <property name="wrist_length" value="0.10"/>
+    <property name="wrist_radius" value="0.025"/>
+
+
+<!-- From Kinova Model -->	
+	<property name="D1" value="0.2102" />
+	<property name="D2" value="0.4100" />
+	<property name="D3" value="0.2070" />
+	<property name="D4" value="0.0750" />
+	<property name="D5" value="0.0750" />
+	<property name="D6" value="0.1850" />
+
+  	<property name="aa" value="0.47996554429844057" />
+	<property name="ca" value="0.88701083317822171" />
+	<property name="sa" value="0.46174861323503386" />
+	<property name="c2a" value="0.57357643635104627" />
+	<property name="s2a" value="0.81915204428899169" />
+    <property name="d3b" value="0.012" />
+	<property name="d4b" value="0.24927682300748782" />
+	<property name="d5b" value="0.08455364601497567" />
+	<property name="d6b" value="0.22727682300748783" />
+
+    <material name="JacoGrey">
+        <color rgba="0.2 0.2 0.9 1.0"/>
+    </material>
+
+    <xacro:macro name="jaco_arm_v0" params="name parent">
+
+      <!-- The base joint & link -->
+      <joint name="${name}_base_joint" type="fixed">
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <parent link="${parent}"/>
+        <child link="${name}_base_link"/>
+      </joint>
+
+      <link name="${name}_base_link">
+        <visual>
+        <material name="JacoGrey" />
+          <origin xyz="0 0 0" rpy="0 0 ${M_PI/2}"/>
+          <geometry>
+            <mesh filename="package://jaco_description/meshes/${name}_base_joint.stl"/>
+          </geometry>
+        </visual>
+        <collision>
+          <origin xyz="0 0 0" rpy="0 0 ${M_PI/2}"/>
+          <geometry>
+            <mesh filename="package://jaco_description/meshes/${name}_base_joint.stl"/>
+          </geometry>
+        </collision>
+      </link>
+
+
+     <!-- First revolute joint & link -->
+
+     <joint name="${name}_shoulder_yaw_joint" type="revolute">
+        <origin xyz="0 0 ${D1}" rpy="0 0 0"/>
+        <axis xyz="0 0 1" rpy="0 0 0"/>
+        <parent link="${name}_base_link"/>
+        <child link="${name}_shoulder_link"/>
+        <limit lower="${-M_PI}" upper="${M_PI}" effort="1" velocity="${M_PI}"/>
+      </joint>
+      <link name="${name}_shoulder_link">
+        <visual>
+        <material name="JacoGrey" />
+          <origin xyz="0 0 0" rpy="${M_PI/2} ${-M_PI/2} 0"/>
+          <geometry>
+            <mesh filename="package://jaco_description/meshes/${name}_shoulder_yaw_joint.stl"/>
+          </geometry>
+        </visual>
+        <collision>
+          <origin xyz="0 0 0" rpy="${M_PI/2} ${-M_PI/2} 0"/>
+          <geometry>
+            <mesh filename="package://jaco_description/meshes/${name}_shoulder_yaw_joint.stl"/>
+          </geometry>
+        </collision>
+      </link>
+
+   <!-- Second revolute joint & link -->
+     <joint name="${name}_shoulder_pitch_joint" type="revolute">
+        <origin xyz="0 0 0" rpy="${-M_PI/2} 0 0"/>
+        <axis xyz="0 0 1"/>
+        <parent link="${name}_shoulder_link"/>
+        <child link="${name}_upper_arm_link"/>
+        <limit lower="${-M_PI}" upper="${M_PI}" effort="1" velocity="${M_PI}"/>
+      </joint>
+      <link name="${name}_upper_arm_link">
+        <visual>
+        <material name="JacoGrey" />
+          <origin xyz="0 0 0" rpy="0 0 ${-M_PI/2}"/>
+          <geometry>
+            <mesh filename="package://jaco_description/meshes/${name}_shoulder_pitch_joint.stl"/>
+          </geometry>
+        </visual>
+        <collision>
+          <origin xyz="0 0 0" rpy="0 0 ${-M_PI/2}"/>
+          <geometry>
+            <mesh filename="package://jaco_description/meshes/${name}_shoulder_pitch_joint.stl"/>
+          </geometry>
+        </collision>
+      </link>
+  
+ <!-- Third revolute joint & link -->
+
+    <joint name="${name}_elbow_pitch_joint" type="revolute">
+        <origin xyz="${D2} 0 ${d3b}" rpy="0 0 0"/>
+        <axis xyz="0 0 1"/>
+        <parent link="${name}_upper_arm_link"/>
+        <child link="${name}_lower_arm_link"/>
+        <limit lower="${-M_PI}" upper="${M_PI}" effort="1" velocity="${M_PI}"/>
+      </joint>
+      <link name="${name}_lower_arm_link">
+        <visual>
+        <material name="JacoGrey" />
+          <origin xyz="0 0 ${-d3b}" rpy="${M_PI} 0 ${M_PI}"/>
+          <geometry>
+            <mesh filename="package://jaco_description/meshes/${name}_elbow_pitch_joint.stl"/>
+          </geometry>
+        </visual>
+        <collision>
+          <origin xyz="0 0 ${-d3b}" rpy="${M_PI} 0 ${M_PI}"/>
+          <geometry>
+            <mesh filename="package://jaco_description/meshes/${name}_elbow_pitch_joint.stl"/>
+          </geometry>
+        </collision>
+      </link>
+
+    <!-- Fourth revolute joint & link -->
+     <joint name="${name}_elbow_roll_joint" type="revolute">
+        <origin xyz="0 ${d4b} 0 " rpy="${-M_PI/2} 0 0"/>
+        <axis xyz="0 0 1"/>
+        <parent link="${name}_lower_arm_link"/>
+        <child link="${name}_lower_arm_roll_link"/>
+        <limit lower="${-M_PI}" upper="${M_PI}" effort="1" velocity="${M_PI}"/>
+      </joint>
+      <link name="${name}_lower_arm_roll_link">
+        <visual>
+        <material name="JacoGrey" />
+          <origin xyz="0 0 ${-d4b + D3}" rpy="${M_PI} 0 ${M_PI/2}"/>
+          <geometry>
+            <mesh filename="package://jaco_description/meshes/${name}_elbow_roll_joint.stl"/>
+          </geometry>
+        </visual>
+        <collision>
+          <origin xyz="0 0 ${-d4b + D3}" rpy="${M_PI} 0 ${M_PI/2}"/>
+          <geometry>
+            <mesh filename="package://jaco_description/meshes/${name}_elbow_roll_joint.stl"/>
+          </geometry>
+        </collision>
+      </link>
+
+  <!-- Fifth revolute joint & link -->
+     <joint name="${name}_wrist_roll_joint" type="revolute">
+        <origin xyz="0 ${-d5b * s2a} ${d5b * c2a}" rpy="${2*aa} 0 0"/>
+        <axis xyz="0 0 1"/>
+        <parent link="${name}_lower_arm_roll_link"/>
+        <child link="${name}_wrist_link"/>
+        <limit lower="${-M_PI}" upper="${M_PI}" effort="1" velocity="${M_PI}"/>
+      </joint>
+      <link name="${name}_wrist_link">
+        <visual>
+        <material name="JacoGrey" />
+          <origin xyz="0 0 ${-d5b/2}" rpy="0 ${M_PI} ${-M_PI/2}"/>
+          <geometry>
+            <mesh filename="package://jaco_description/meshes/${name}_wrist_roll_joint.stl"/>
+          </geometry>
+        </visual>
+        <collision>
+          <origin xyz="0 0 ${-d5b/2}" rpy="0 ${M_PI} ${-M_PI/2}"/>
+          <geometry>
+            <mesh filename="package://jaco_description/meshes/${name}_wrist_roll_joint.stl"/>
+          </geometry>
+        </collision>
+      </link>
+
+  <!-- Sixth revolute joint & link -->
+   	<joint name="${name}_hand_roll_joint" type="revolute">
+        <origin xyz="0 ${-d6b * s2a} ${d6b * c2a}" rpy="${2*aa} 0 0"/>
+        <axis xyz="0 0 1"/>
+        <parent link="${name}_wrist_link"/>
+        <child link="${name}_hand_link"/>
+        <limit lower="${-M_PI}" upper="${M_PI}" effort="1" velocity="${M_PI}"/>
+      </joint>
+      <link name="${name}_hand_link">
+        <visual>
+          <material name="JacoGrey" />
+          <origin xyz="0 0 ${-D6}" rpy="0 0 ${-M_PI}"/>
+          <geometry>
+            <mesh filename="package://jaco_description/meshes/${name}_hand_roll_joint.stl"/>
+          </geometry>
+        </visual>
+        <collision>
+          <origin xyz="0 0 ${-D6}" rpy="0 0 ${-M_PI}"/>
+          <geometry>
+            <mesh filename="package://jaco_description/meshes/${name}_hand_roll_joint.stl"/>
+          </geometry>
+        </collision>
+      </link>
+      
+ 
+  <!-- First finger (Approximative placing) -->
+   	<joint name="${name}_finger_1_joint" type="revolute">
+        <origin xyz="-0.036 0.021 ${-0.07}" rpy="0 ${-M_PI/7} 0"/>
+        <axis xyz="0 1 0"/>
+        <parent link="${name}_hand_link"/>
+        <child link="${name}_finger_1_link"/>
+        <limit lower="${-M_PI}" upper="${M_PI}" effort="1" velocity="${M_PI}"/>
+      </joint>
+      <link name="${name}_finger_1_link">
+        <visual>
+        <material name="JacoGrey" />
+          <origin xyz="0 0 0" rpy="0 0 0"/>
+              <geometry>
+            <mesh filename="package://jaco_description/meshes/finger.dae"/>
+          </geometry>
+        </visual>
+        <collision>
+          <origin xyz="0 0 0" rpy="0 0 0"/>
+              <geometry>
+            <mesh filename="package://jaco_description/meshes/finger.dae"/>
+          </geometry>
+        </collision>
+      </link>
+ 
+      
+  <!-- Second finger (Approximative placing) -->
+   	<joint name="${name}_finger_2_joint" type="revolute">
+        <origin xyz="0.036 -0 ${-0.07}" rpy="0 ${-M_PI/7} ${-M_PI}"/>
+        <axis xyz="0 1 0"/>
+        <parent link="${name}_hand_link"/>
+        <child link="${name}_finger_2_link"/>
+        <limit lower="${-M_PI}" upper="${M_PI}" effort="1" velocity="${M_PI}"/>
+      </joint>
+      <link name="${name}_finger_2_link">
+        <visual>
+        <material name="JacoGrey" />
+          <origin xyz="0 0 0" rpy="0 0 0"/>
+          <geometry>
+            <mesh filename="package://jaco_description/meshes/finger.dae"/>
+          </geometry>
+        </visual>
+        <collision>
+          <origin xyz="0 0 0" rpy="0 0 0"/>
+          <geometry>
+            <mesh filename="package://jaco_description/meshes/finger.dae"/>
+          </geometry>
+        </collision>
+      </link>      
+  
+  
+   <!-- Third finger (Approximative placing) -->
+   	<joint name="${name}_finger_3_joint" type="revolute">
+        <origin xyz="-0.036 -0.021 ${-0.07}" rpy="0 ${-M_PI/7} 0"/>
+        <axis xyz="0 1 0"/>
+        <parent link="${name}_hand_link"/>
+        <child link="${name}_finger_3_link"/>
+        <limit lower="${-M_PI}" upper="${M_PI}" effort="1" velocity="${M_PI}"/>
+      </joint>
+      <link name="${name}_finger_3_link">
+        <visual>
+        <material name="JacoGrey" />
+          <origin xyz="0 0 0" rpy="0 0 0"/>
+          <geometry>
+            <mesh filename="package://jaco_description/meshes/finger.dae"/>
+          </geometry>
+        </visual>
+        <collision>
+          <origin xyz="0 0 0" rpy="0 0 0"/>
+          <geometry>
+            <mesh filename="package://jaco_description/meshes/finger.dae"/>
+          </geometry>
+        </collision>
+      </link>
+
+    </xacro:macro>
+</robot>
+

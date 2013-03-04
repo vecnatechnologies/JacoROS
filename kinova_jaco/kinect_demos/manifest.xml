@@ -1,0 +1,20 @@
+<package>
+  <description brief="kinect_demos">
+
+     kinect_demos - A few OpenNI / pcl / Kinect demo apps for the Kinova Jaco arm.
+
+  </description>
+  <author>fferland</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/kinect_test</url>
+  <depend package="roscpp"/>
+  <depend package="pcl_ros"/>
+  <depend package="pcl"/>
+  <depend package="std_srvs"/>
+  <depend package="geometry_msgs"/>
+  <depend package="jaco_node"/>
+
+</package>
+
+

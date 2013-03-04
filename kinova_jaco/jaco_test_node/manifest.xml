@@ -1,0 +1,15 @@
+<package>
+  <description brief="test_node">
+
+     test_node
+
+  </description>
+  <author>Dominic</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/test_node</url>
+  <depend package="jaco_api"/>
+
+</package>
+
+

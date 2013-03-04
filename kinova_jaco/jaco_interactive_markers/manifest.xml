@@ -1,0 +1,20 @@
+<package>
+  <description brief="jaco_interactive_markers">
+
+     jaco_interactive_markers
+
+  </description>
+  <author>Dominic</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/jaco_interactive_markers</url>
+  <depend package="interactive_markers"/>
+  <depend package="jaco_node"/>
+  <depend package="jaco_description"/>
+  <depend package="jaco_api"/>
+  <depend package="actionlib"/>
+  <depend package="arm_navigation_msgs"/>
+
+</package>
+
+

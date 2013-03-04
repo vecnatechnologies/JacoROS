@@ -1,0 +1,15 @@
+<package>
+  <description brief="jaco_description">
+
+     jaco_description - URDF model of the Kinova Jaco arm.
+
+  </description>
+  <author>François Ferland</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/jaco_description</url>
+  <depend package="urdf"/>
+
+</package>
+
+

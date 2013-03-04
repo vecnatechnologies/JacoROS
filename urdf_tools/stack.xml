@@ -1,0 +1,13 @@
+<stack>
+  <description brief="Tools for use with URDF Models">This package contains a number of tools for making, viewing and using URDF models.</description>
+  <author>Maintained by David Lu!!</author>
+  <license>BSD</license>  
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/urdf_tools</url>
+  <depend stack="common_msgs" /> <!-- sensor_msgs -->
+  <depend stack="geometry" /> <!-- tf, tf_conversions -->
+  <depend stack="kinematics" /> <!-- kinematics_msgs -->
+  <depend stack="robot_model" /> <!-- robot_state_publisher, urdf, kdl_parser -->
+  <depend stack="ros" /> <!-- rospy, roscpp -->
+
+</stack>

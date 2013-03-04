@@ -1,0 +1,13 @@
+<launch>
+    <!-- This creates an environment where the Kinova Jaco arm is slightly
+        to the left and front of the Kinect camera. -->
+
+    <!-- You have to launch these manually:
+        <include file="$(find openni_launch)/launch/openni.launch"/>
+        <include file="$(find jaco_node)/launch/standalone.launch"/>
+    -->
+    <include file="$(find kinect_demos)/launch/extract_cylinder.launch"/>
+    <node pkg="tf" type="static_transform_publisher" name="base_to_camera_tf"
+        args="0.33 0.60 -0.35 -1.57 0.00 0.18  /camera_link /base_link 10"/>
+
+</launch>

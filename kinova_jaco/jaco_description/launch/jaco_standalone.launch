@@ -1,0 +1,6 @@
+<launch>
+  <include file="$(find jaco_description)/robots/upload_jaco_standalone.launch"/>
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"/>
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher"/>
+  <param name="/use_gui" value="true" /> 
+</launch>

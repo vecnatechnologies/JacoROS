@@ -1,0 +1,16 @@
+<package>
+  <description brief="jaco_bringup">
+
+     jaco_bringup
+
+  </description>
+  <author>Dominic</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/jaco_bringup</url>
+  <depend package="jaco_api"/>
+  <depend package="jaco_test_node"/>
+
+</package>
+
+

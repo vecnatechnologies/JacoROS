@@ -1,0 +1,26 @@
+<package>
+  <description brief="jaco_api">
+
+     jaco_api - CPP wrapper for the C#/Mono-based JACO API.
+
+     NOTE: The package currently assumes that the API DLLs are available in the
+     lib/ folder.
+  </description>
+  <author>François Ferland</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/jaco_api</url>
+  <depend package="roscpp"/>
+
+  <rosdep name="mono-devel"/>
+  <rosdep name="libusb-devel"/>
+
+
+<export>
+	<cpp cflags='-I${prefix}/include' lflags='-L${prefix}/lib -ljaco_api'/>
+</export>
+
+
+</package>
+
+

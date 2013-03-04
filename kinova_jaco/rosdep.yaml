@@ -1,0 +1,6 @@
+mono-devel:
+    ubuntu: mono-devel mono-gmcs 
+
+libusb-devel:
+    ubuntu: libusb-1.0-0-dev
+
