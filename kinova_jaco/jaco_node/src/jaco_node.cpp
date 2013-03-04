@@ -9,7 +9,7 @@
 #include <jaco_node/RetractJacoArm.h>
 #include <jaco_node/JointPose.h>
 #include <jaco_node/FingerPose.h>
-#include <LinearMath/btMatrix3x3.h>
+#include <tf/LinearMath/Matrix3x3.h>
 #include <boost/array.hpp>
 #include <actionlib/server/action_server.h>
 #include <trajectory_msgs/JointTrajectory.h>
@@ -18,10 +18,10 @@
 
 namespace jaco_node
 {
-    void quaternionToRPY(const btQuaternion& q, double& r, double& p, double& y)
+    void quaternionToRPY(const tf::Quaternion& q, double& r, double& p, double& y)
     {
         //Using Bullet Library        
-        btMatrix3x3 m(q);
+        tf::Matrix3x3 m(q);
         m.getRPY(r,p,y);
     }
 
@@ -140,19 +140,19 @@ namespace jaco_node
             pitch_ = s.hand_orientation_[1];
             yaw_ = s.hand_orientation_[2];
             
-            btQuaternion o = btQuaternion::getIdentity();
+            tf::Quaternion o = tf::Quaternion::getIdentity();
             
             // Perform intrinsic X-Y-Z Euler rotation with multiple quaternions.
             // TODO: Eventually replace this by something more efficient.
-            btQuaternion tq;
+            tf::Quaternion tq;
             // Z around first joint.
-            tq.setRotation(btVector3(0,0,1), js_.position[0]); 
+            tq.setRotation(tf::Vector3(0,0,1), js_.position[0]); 
             o *= tq;
-            tq.setRotation(btVector3(1,0,0), s.hand_orientation_[0]); // X
+            tq.setRotation(tf::Vector3(1,0,0), s.hand_orientation_[0]); // X
             o *= tq;
-            tq.setRotation(btVector3(0,1,0), s.hand_orientation_[1]); // Y
+            tq.setRotation(tf::Vector3(0,1,0), s.hand_orientation_[1]); // Y
             o *= tq;
-            tq.setRotation(btVector3(0,0,1), s.hand_orientation_[2]); // Z
+            tq.setRotation(tf::Vector3(0,0,1), s.hand_orientation_[2]); // Z
             o *= tq;
                        
             lastOrientation_ = o;
@@ -205,12 +205,12 @@ namespace jaco_node
             tf::Stamped<tf::Pose> pose_org, pose;
             tf::poseStampedMsgToTF(*msg, pose_org);
             tf_.transformPose(base_frame_, pose_org, pose);
-            btMatrix3x3 goal_rot = pose.getBasis();
+          tf::Matrix3x3 goal_rot = pose.getBasis();
 
             double roll, pitch, yaw;
             // 1. The orientation is relative to the second joint - get the
             //    reverse rotation.
-            btMatrix3x3 j1_rot = btMatrix3x3::getIdentity();
+            tf::Matrix3x3 j1_rot = tf::Matrix3x3::getIdentity();
             // Reverse angle since we want to get the pose relative to the 
             // first joint.
             j1_rot.setRPY(0, 0, - js_.position[0]); 
@@ -219,24 +219,24 @@ namespace jaco_node
 
             // 2. Roll - Find the angle between Z and Z' (Zg projected on the 
             //    YZ plane).
-            btVector3 xi(1, 0, 0);
-            btVector3 zi(0, 0, 1);
-            btVector3 zg = goal_rot.getColumn(2);
+            tf::Vector3 xi(1, 0, 0);
+            tf::Vector3 zi(0, 0, 1);
+            tf::Vector3 zg = goal_rot.getColumn(2);
             ROS_DEBUG("Goal Z: (%f, %f, %f)", zg.x(), zg.y(), zg.z()); 
-            btVector3 zp(0, zg.y(), zg.z());
+            tf::Vector3 zp(0, zg.y(), zg.z());
             zp.normalize();
             roll = zi.angle(zp);
             if (zi.cross(zp).dot(xi) < 0)
                 roll *= -1;
             
             // 3. Pitch - Find the angle between Z' and Zg (around Y').
-            btVector3 yp(0, cos(roll), sin(roll)); 
+            tf::Vector3 yp(0, cos(roll), sin(roll)); 
             pitch = zp.angle(zg);
             if (zp.cross(zg).dot(yp) < 0)
                 pitch *= -1;
 
             // 4. Yaw - Find the angle between Y' and Xg (around Z'').
-            btVector3 yg = goal_rot.getColumn(1);
+            tf::Vector3 yg = goal_rot.getColumn(1);
             // Rotated Y by roll around X.
             ROS_DEBUG("YP: (%f, %f, %f)", yp.x(), yp.y(), yp.z()); 
             yaw = yp.angle(yg);

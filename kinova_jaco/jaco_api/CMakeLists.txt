@@ -34,11 +34,11 @@ add_subdirectory(src/JacoAPIWrapper)
 include($ENV{ROS_ROOT}/core/rosbuild/FindPkgConfig.cmake)
 
 #Older mono package
-pkg_check_modules(MONO REQUIRED mono)
+#pkg_check_modules(MONO REQUIRED mono)
 
 #For newer Ubuntu versions
-#pkg_check_modules(MONO2 REQUIRED mono-2)
-#pkg_check_modules(GLIB REQUIRED glib-2.0)
+pkg_check_modules(MONO2 REQUIRED mono-2)
+pkg_check_modules(GLIB REQUIRED glib-2.0)
 
 include_directories(${MONO_INCLUDE_DIRS} ${MONO2_INCLUDE_DIRS} ${GLIB_INCLUDE_DIRS})
 

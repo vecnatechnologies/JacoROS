@@ -66,7 +66,7 @@ namespace kinect_demos
             double max = -1;
             BOOST_FOREACH(const pcl::PointXYZ& pt, msg->points)
             {
-                btVector3 p = btVector3(pt.x, pt.y, pt.z) - old_p_;
+                tf::Vector3 p = tf::Vector3(pt.x, pt.y, pt.z) - old_p_;
                 double h = p.dot(old_cyl_);
                 if (h > max)
                     max = h;
@@ -98,13 +98,13 @@ namespace kinect_demos
             // e.g the base, CoG, ...
            
             // Cylinder origin, seems to be CoG.
-            btVector3 p(
+            tf::Vector3 p(
                 msg->values[0], 
                 msg->values[1], 
                 msg->values[2]);
 
             // Cylinder vertical axis.
-            btVector3 cyl(
+            tf::Vector3 cyl(
                 msg->values[3],
                 msg->values[4],
                 msg->values[5]);
@@ -135,22 +135,22 @@ namespace kinect_demos
             // cylinder's position) and the Y axis so that it points to the
             // left.
             // Y axis is the cross product of Z and X.
-            btVector3 view = p.normalized();
-            btVector3 oz = -1.0 * cyl;
-            btVector3 ox = view.cross(oz);
-            btVector3 oy = oz.cross(ox);
+            tf::Vector3 view = p.normalized();
+            tf::Vector3 oz = -1.0 * cyl;
+            tf::Vector3 ox = view.cross(oz);
+            tf::Vector3 oy = oz.cross(ox);
 
             // !! OLD SETUP !!
             // We generate X with the cross product of the cylinder axis (Y)
             // and the view vector and should point to the left.
             // Z is then produced with the cross product of X and Y.
-            // btVector3 view = p.normalized();
-            // btVector3 oy = cyl;
-            // btVector3 ox = oy.cross(view).normalized();
-            // btVector3 oz = ox.cross(oy);
+            // tf::Vector3 view = p.normalized();
+            // tf::Vector3 oy = cyl;
+            // tf::Vector3 ox = oy.cross(view).normalized();
+            // tf::Vector3 oz = ox.cross(oy);
             
             // Convert this into a quaternion from the basis matrix.
-            btMatrix3x3 basis(
+            tf::Matrix3x3 basis(
                 ox.x(), oy.x(), oz.x(),
                 ox.y(), oy.y(), oz.y(),
                 ox.z(), oy.z(), oz.z());
@@ -158,21 +158,21 @@ namespace kinect_demos
             // Convert to the pose message.
             // Target pose: half a cylinder height back from the center, minus
             // 3cm to give enough grip to the fingers.
-            btVector3 target_p = p - ((0.5 * cyl_height_ - 0.03) * oz);
+            tf::Vector3 target_p = p - ((0.5 * cyl_height_ - 0.03) * oz);
             target_pose_.header =  msg->header;
             tf::pointTFToMsg(target_p, target_pose_.pose.position);
-            btQuaternion q;
+            tf::Quaternion q;
             basis.getRotation(q);
             tf::quaternionTFToMsg(q, target_pose_.pose.orientation);
 
             // 1. Create the "toward" pose (back a full cylinder height).
-            btVector3 toward_pos = p - (cyl_height_ * oz);
+            tf::Vector3 toward_pos = p - (cyl_height_ * oz);
             toward_pose_.header = target_pose_.header;
             tf::pointTFToMsg(toward_pos, toward_pose_.pose.position);
             toward_pose_.pose.orientation = target_pose_.pose.orientation;
 
             // 2. Create the "lifted" pose (same as "toward").
-            btVector3 lifted_pos = toward_pos;
+            tf::Vector3 lifted_pos = toward_pos;
             lifted_pose_.header = target_pose_.header;
             tf::pointTFToMsg(lifted_pos, lifted_pose_.pose.position);
             lifted_pose_.pose.orientation = target_pose_.pose.orientation;
@@ -218,7 +218,7 @@ namespace kinect_demos
         /// \brief Returns if we're at the specified position.
         bool at(const geometry_msgs::PoseStamped& ref)
         {
-            btVector3 p, ref_p;
+            tf::Vector3 p, ref_p;
 
             tf::Stamped<tf::Pose> hp_tmp, hp;
             tf::poseStampedMsgToTF(hand_pose_, hp_tmp);
@@ -367,8 +367,8 @@ namespace kinect_demos
         geometry_msgs::PoseStamped hand_pose_;
         boost::array<double, 3> fingers_;
 
-        btVector3 old_p_;
-        btVector3 old_cyl_;
+        tf::Vector3 old_p_;
+        tf::Vector3 old_cyl_;
         double cyl_height_;
         double old_cyl_height_;
         double avg_count_;
